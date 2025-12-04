@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
-import { CardanoWallet, MeshBadge } from "@meshsdk/react";
+import { CardanoWallet } from "@meshsdk/react";
 
 export default function Home() {
   return (
