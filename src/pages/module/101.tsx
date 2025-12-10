@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { CardanoWallet, useWallet } from "@meshsdk/react";
+import { SendLovelace } from "@/components/SendLovelace";
 
 const NETWORK_NAMES: Record<number, string> = {
   0: "Testnet",
@@ -155,20 +156,31 @@ export default function Module101() {
               <span className="font-mono text-sm text-gray-400 pt-1">101.3</span>
               <div className="flex-1">
                 <h2 className="font-medium text-gray-900 mb-2">
-                  Inspect a Transaction Preview
+                  Build and Submit Transactions
                 </h2>
-                <p className="text-gray-500 text-sm mb-4">
-                  I can inspect a transaction preview from the example app.
+                <p className="text-gray-500 text-sm mb-6">
+                  I can build transactions on the server, sign them with my wallet, and submit them to the blockchain.
                 </p>
 
-                <div className="bg-gray-50 rounded-md p-4">
-                  {connected ? (
-                    <TransactionPreview wallet={wallet} />
-                  ) : (
-                    <p className="text-sm text-gray-500">
-                      Connect your wallet to build and preview a transaction.
-                    </p>
-                  )}
+                {/* Demo Transaction */}
+                <div className="mb-8">
+                  <h3 className="text-sm font-mono text-gray-400 mb-3">Demo: Send ADA</h3>
+                  <SendLovelace variant="1013example" />
+                </div>
+
+                {/* Mystery Transactions */}
+                <div className="mb-4">
+                  <h3 className="text-sm font-mono  mb-1">Your Task: Find the Corrupt Transaction</h3>
+                  <p className="text-sm text-gray-500 mb-4">
+                    One of these four transactions is malicious. Inspect the transaction preview in your wallet before signing. Can you identify which one is trying to steal your funds?
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <SendLovelace variant="1013a" title="Example A" />
+                  <SendLovelace variant="1013b" title="Example B" />
+                  <SendLovelace variant="1013c" title="Example C" />
+                  <SendLovelace variant="1013d" title="Example D" />
                 </div>
               </div>
             </div>
@@ -181,74 +193,6 @@ export default function Module101() {
           Marlowe PBL by Gimbalabs
         </p>
       </footer>
-    </div>
-  );
-}
-
-function TransactionPreview({ wallet }: { wallet: ReturnType<typeof useWallet>["wallet"] }) {
-  const [txPreview, setTxPreview] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const buildPreview = async () => {
-    setLoading(true);
-    setError(null);
-    setTxPreview(null);
-
-    try {
-      const { Transaction } = await import("@meshsdk/core");
-
-      const utxos = await wallet.getUtxos();
-      if (!utxos || utxos.length === 0) {
-        throw new Error("No UTxOs found. Make sure you have test ADA (see SLT 101.2).");
-      }
-
-      const changeAddress = await wallet.getChangeAddress();
-
-      // Build a simple self-payment transaction for preview
-      const tx = new Transaction({ initiator: wallet });
-      tx.sendLovelace(changeAddress, "1000000"); // Send 1 ADA to self
-
-      const unsignedTx = await tx.build();
-
-      // Format the preview
-      const preview = {
-        type: "Transaction Preview",
-        sendingTo: changeAddress.slice(0, 20) + "..." + changeAddress.slice(-8),
-        amount: "1 ADA (1,000,000 lovelace)",
-        note: "This is a preview only - transaction not submitted",
-        rawTxLength: unsignedTx.length + " characters"
-      };
-
-      setTxPreview(JSON.stringify(preview, null, 2));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to build transaction");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div>
-      <button
-        onClick={buildPreview}
-        disabled={loading}
-        className="px-4 py-2 text-sm bg-gray-900 text-white rounded-md hover:bg-gray-800 disabled:bg-gray-400 transition-colors"
-      >
-        {loading ? "Building..." : "Build Transaction Preview"}
-      </button>
-
-      {error && (
-        <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded text-sm text-red-600">
-          {error}
-        </div>
-      )}
-
-      {txPreview && (
-        <pre className="mt-4 p-4 bg-gray-900 text-gray-100 rounded-md text-xs overflow-x-auto font-mono">
-          {txPreview}
-        </pre>
-      )}
     </div>
   );
 }
