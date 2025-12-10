@@ -10,9 +10,9 @@ const NETWORK_NAMES: Record<number, string> = {
 };
 
 const TABS = [
-  { id: "101.1", label: "101.1", title: "Connect a Wallet" },
-  { id: "101.2", label: "101.2", title: "Get Test ADA" },
-  { id: "101.3", label: "101.3", title: "Inspect Transactions" },
+  { id: "101.1", label: "Lesson 101.1", title: "Connect a Wallet" },
+  { id: "101.2", label: "Lesson 101.2", title: "Get Test ADA" },
+  { id: "101.3", label: "Lesson 101.3", title: "Inspect Transactions" },
 ];
 
 export default function Module101() {
@@ -53,6 +53,13 @@ export default function Module101() {
       <main className="max-w-4xl mx-auto px-6 py-12">
         <h1 className="text-3xl font-light text-gray-900 mb-2">Module 101</h1>
         <p className="text-gray-500 mb-8">Getting Started with Cardano Preprod</p>
+
+        <p className="text-gray-500 mb-8">
+          This interactive demo accompanies{" "}
+          <Link href="https://app.andamio.io/course/b48c3718f2175f05cdb2767a4721d03e2df2f69f9302241ba200b792/101">
+          Marlowe PBL, Module 101
+          </Link>
+        </p>
 
         {/* Tab Navigation */}
         <div className="border-b border-gray-200 mb-8">
@@ -192,7 +199,7 @@ export default function Module101() {
 
               {/* Mystery Transactions */}
               <div className="mb-4">
-                <h3 className="text-sm font-mono mb-1">Your Task: Find the Corrupt Transaction</h3>
+                <h2 className="font-medium text-gray-900 mb-2 text-xl">Your Task: Find the Corrupt Transaction</h2>
                 <p className="text-sm text-gray-500 mb-4">
                   One of these four transactions is malicious. Inspect the transaction preview in your wallet before signing. Can you identify which one is trying to steal your funds?
                 </p>
